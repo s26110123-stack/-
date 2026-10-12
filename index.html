@@ -1,17 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="./style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pen</title>
-  </head>
-  <body>
-
-    <script src="./script.js"></script>
-  </body>
-</html>
-<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -333,14 +320,12 @@
         }
 
         /* ==================== 響應式設計 (RWD) ==================== */
-        /* 平板電腦 (3欄) */
         @media (max-width: 992px) {
             .portfolio-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
 
-        /* 大型手機 (2欄) */
         @media (max-width: 768px) {
             .portfolio-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -355,7 +340,6 @@
             }
         }
 
-        /* 小型手機 (1欄) */
         @media (max-width: 480px) {
             .portfolio-grid {
                 grid-template-columns: 1fr;
@@ -377,7 +361,6 @@
         <header class="profile-card">
             <div class="avatar-wrapper">
                 <div class="avatar-glow"></div>
-                <!-- 預設假圖片 (可替換為您的照片 URL) -->
                 <img class="avatar-img" src="https://i.postimg.cc/28jGM5CR/temp-image-30F7BB40-034E-42DC-8F49-14F02BDB66C1.jpg" alt="大頭貼">
             </div>
             <h1 class="user-name"></h1>
@@ -414,17 +397,17 @@
                 </div>
             </a>
 
-            <!-- Week 3 (未解鎖) -->
-            <div class="card locked" onclick="playLockedEffect(this)">
+            <!-- Week 3 (已解鎖) -->
+            <a href="w3/index.html" class="card unlocked">
                 <div class="card-header">
                     <span class="badge">WEEK 03</span>
-                    <span class="icon">🔒</span>
+                    <span class="icon">🎭</span>
                 </div>
-                <div class="card-title">未解鎖關卡</div>
+                <div class="card-title">Week 3 - 迷因產生器</div>
                 <div class="card-footer">
-                    <span class="action-text">敬請期待...</span>
+                    <span class="action-text">前往關卡 ➔</span>
                 </div>
-            </div>
+            </a>
 
             <!-- Week 4 (未解鎖) -->
             <div class="card locked" onclick="playLockedEffect(this)">
@@ -594,7 +577,6 @@
     <script>
         function playLockedEffect(element) {
             element.classList.remove('shake-anim');
-            // 強制重繪 (reflow) 讓動畫可以重複觸發
             void element.offsetWidth;
             element.classList.add('shake-anim');
         }

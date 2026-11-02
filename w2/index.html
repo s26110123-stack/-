@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什麼？隨機抽籤機</title>
+    <!-- 引入Google字體增添可愛感 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- 載入 CSS 樣式檔 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- 載入 JS 程式碼 -->
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <main class="card">
+        <!-- 標題與結果顯示區域 -->
+        <h1 id="title" class="title">今天吃什麼？</h1>
+        
+        <!-- 圖片顯示區域（初始隱藏） -->
+        <div id="image-container" class="image-container hidden">
+            <img id="food-image" src="" alt="美食圖片">
+        </div>
+
+        <!-- 按鈕區塊 -->
+        <div class="button-group">
+            <button id="draw-btn" class="btn primary-btn">✨ 點我抽籤 ✨</button>
+            <a id="map-btn" class="btn map-btn hidden" href="#" target="_blank" rel="noopener noreferrer">
+                📍 馬上出發 (Google Map)
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
+/* 全局樣式設定 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Zen Maru Gothic', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    background-color: #fff9e6; /* 溫和軟萌的淡黃色背景 */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* 中央可愛卡片容器 */
+.card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 25px;
+    border-radius: 28px;
+    box-shadow: 0 15px 35px rgba(255, 152, 0, 0.15);
+    text-align: center;
+    border: 4px solid #ffe082;
+}
+
+/* 大標題樣式 */
+.title {
+    color: #ff6f00; /* 活力橘色 */
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 25px;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 動態加入的生動彈跳動畫類別 */
+.bounce-animation {
+    animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    70% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 美食圖片容器與樣式 */
+.image-container {
+    width: 100%;
+    height: 220px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 按鈕排列與基礎樣式 */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 抽籤按鈕 (黃橘亮眼色) */
+.primary-btn {
+    background-color: #ffb300;
+    color: #ffffff;
+    box-shadow: 0 6px 0 #e65100;
+}
+
+.primary-btn:hover {
+    background-color: #ffa000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #e65100;
+}
+
+.primary-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #e65100;
+}
+
+/* 地圖連結按鈕 (溫和綠/橘輔助色) */
+.map-btn {
+    background-color: #ff7043;
+    color: white;
+    box-shadow: 0 4px 0 #d84315;
+}
+
+.map-btn:hover {
+    background-color: #f4511e;
+    transform: translateY(-2px);
+}
+
+/* 控制顯示隱藏的通用工具類別 */
+.hidden {
+    display: none !important;
+}
+// 確保 DOM 完全載入後才執行邏輯，避免 null 錯誤
+document.addEventListener('DOMContentLoaded', () => {
+
+    // 1. 食物資料庫（包含名稱、圖片網路連結、Google Map 搜尋連結）
+    const foodList = [
+        {
+            name: "🍱 排骨飯",
+            image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80",
+            mapUrl: "https://www.google.com/maps/search/排骨飯"
+        },
+        {
+            name: "🥟 水餃",
+            image: "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=600&q=80",
+            mapUrl: "https://www.google.com/maps/search/水餃"
+        },
+        {
+            name: "🍔 麥當勞",
+            image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+            mapUrl: "https://www.google.com/maps/search/麥當勞"
+        },
+        {
+            name: "🍝 義大利麵",
+            image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80",
+            mapUrl: "https://www.google.com/maps/search/義大利麵"
+        },
+        {
+            name: "🏪 便利商店",
+            image: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=600&q=80",
+            mapUrl: "https://www.google.com/maps/search/便利商店"
+        }
+    ];
+
+    // 2. 抓取 HTML 元素
+    const titleElement = document.getElementById('title');
+    const drawBtn = document.getElementById('draw-btn');
+    const imageContainer = document.getElementById('image-container');
+    const foodImage = document.getElementById('food-image');
+    const mapBtn = document.getElementById('map-btn');
+
+    // 3. 點擊按鈕事件處理
+    drawBtn.addEventListener('click', () => {
+        // 從選單中隨機抽取一個
+        const randomIndex = Math.floor(Math.random() * foodList.length);
+        const selectedFood = foodList[randomIndex];
+
+        // 移除先前的動畫 class，確保每次點擊都能重複觸發動畫
+        titleElement.classList.remove('bounce-animation');
+        imageContainer.classList.remove('bounce-animation');
+
+        // 強制重繪（Reflow）以重置動畫
+        void titleElement.offsetWidth;
+
+        // 更新內容
+        titleElement.textContent = selectedFood.name;
+        foodImage.src = selectedFood.image;
+        mapBtn.href = selectedFood.mapUrl;
+
+        // 顯示圖片與地圖按鈕，並加上彈跳動畫
+        imageContainer.classList.remove('hidden');
+        mapBtn.classList.remove('hidden');
+        
+        titleElement.classList.add('bounce-animation');
+        imageContainer.classList.add('bounce-animation');
+
+        // 變更抽籤按鈕文字增添趣味
+        drawBtn.textContent = "🔄 再抽一次";
+    });
+
+});
